@@ -22,7 +22,7 @@
 
 const bool Test_2D::within_round(const double val1, const double val2, const double precision) const
 {
-        return (fabs(val1 - val2) < precision);
+    return (fabs(val1 - val2) < precision);
 }
 
 const bool Test_2D::mesh_contains(const Facet_2D& facet, const Mesh_2D& mesh, const double precision) const
@@ -336,15 +336,6 @@ void Test_2D::test_Point_2D()
     p1 *= 0.5;
     assert(within_round(p1.get_x(), 10, precision));
     assert(within_round(p1.get_y(), 8, precision));
-    // test ==
-    p2 = Point_2D(10,8);
-    assert(p1 == p2);
-    p2 = Point_2D(10.1,7.9);
-    assert(!(p1 == p2));
-    // test !=
-    assert(p1 != p2);
-    p2 = Point_2D(10,8);
-    assert(!(p1 != p2));
     // test +
     p2 = p1 + v;
     assert(within_round(p2.get_x(), 8, precision));
@@ -487,15 +478,6 @@ void Test_2D::test_Vector_2D()
     assert(within_round(angle_between(v1, v2), 0, precision));
     v2 = Vector_2D(-1,-1);
     assert(within_round(angle_between(v1, v2), pi, precision));
-    // test ==
-    v2 = Vector_2D(5,5);
-    assert(v1 == v2);
-    v2 = Vector_2D(-5,-5);
-    assert(!(v1 == v2));
-    // test !=
-    assert(v1 != v2);
-    v2 = Vector_2D(5,5);
-    assert(!(v1 != v2));
     // test +
     v2 = Vector_2D(-1,1);
     Vector_2D v3 = v1 + v2;
@@ -562,7 +544,7 @@ void Test_2D::test_intersect_vector_vector()
     o1 = Point_2D(-1,-1);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 1);
-    assert(vid.p1 == o2);
+    assert(is_equal(vid.p1, o2, precision));
     // v1 before v2, v1 passes o2
     o1 = Point_2D(0,0);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
@@ -581,50 +563,50 @@ void Test_2D::test_intersect_vector_vector()
     o1 = Point_2D(0,0);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o2);
-    assert(vid.p2 == o2 + v2);
+    assert(is_equal(vid.p1, o2, precision));
+    assert(is_equal(vid.p2, o2 + v2, precision));
     // o1 same as o2, v1 inside v2
     v1 = Vector_2D(3,3);
     assert(intersect_vectors(o2,o2+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o2);
-    assert(vid.p2 == o2 + v1);
+    assert(is_equal(vid.p1, o2, precision));
+    assert(is_equal(vid.p2, o2 + v1, precision));
     // o1 same as o2, v1 same as v2
     v1 = Vector_2D(5,5);
     assert(intersect_vectors(o2,o2+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o2);
-    assert(vid.p2 == o2 + v1);
+    assert(is_equal(vid.p1, o2, precision));
+    assert(is_equal(vid.p2, o2 + v1, precision));
     // o1 same as o2, v1 longer than v2
     v1 = Vector_2D(6,6);
     assert(intersect_vectors(o2,o2+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o2);
-    assert(vid.p2 == o2 + v2);
+    assert(is_equal(vid.p1, o2, precision));
+    assert(is_equal(vid.p2, o2 + v2, precision));
     // o1 after o2, v1 inside v2
     o1 = Point_2D(3,3);
     v1 = Vector_2D(2,2);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o1);
-    assert(vid.p2 == o1 + v1);
+    assert(is_equal(vid.p1, o1, precision));
+    assert(is_equal(vid.p2, o1 + v1, precision));
     // o1 after o2, ep1 == ep2
     v1 = Vector_2D(4,4);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o1);
-    assert(vid.p2 == o1 + v1);
+    assert(is_equal(vid.p1, o1, precision));
+    assert(is_equal(vid.p2, o1 + v1, precision));
     // o1 after o2, ep1 past ep2
     v1 = Vector_2D(5,5);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o1);
-    assert(vid.p2 == o2 + v2);
+    assert(is_equal(vid.p1, o1, precision));
+    assert(is_equal(vid.p2, o2 + v2, precision));
     // o1 same as ep2
     o1 = Point_2D(7,7);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 1);
-    assert(vid.p1 == o1);
+    assert(is_equal(vid.p1, o1, precision));
     // o1 past v2
     o1 = Point_2D(8,8);
     assert(!intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision)); // no intersection
@@ -638,60 +620,60 @@ void Test_2D::test_intersect_vector_vector()
     // o1 == o2, 1 intersection
     assert(intersect_vectors(o2,o2+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 1);
-    assert(vid.p1 == o2);
+    assert(is_equal(vid.p1, o2, precision));
     // o1 past o2, v1 before o2
     o1 = Point_2D(3,3);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o1);
-    assert(vid.p2 == o2);
+    assert(is_equal(vid.p1, o1, precision));
+    assert(is_equal(vid.p2, o2, precision));
     // o1 past o2, ep1 == o2
     o1 = Point_2D(5,5);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o1);
-    assert(vid.p2 == o2);
+    assert(is_equal(vid.p1, o1, precision));
+    assert(is_equal(vid.p2, o2, precision));
     // v1 inside v2
     o1 = Point_2D(6,6);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o1);
-    assert(vid.p2 == o1 + v1);
+    assert(is_equal(vid.p1, o1, precision));
+    assert(is_equal(vid.p2, o1 + v1, precision));
     // o1 on ep2, v1 inside v2
     o1 = Point_2D(7,7);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o1);
-    assert(vid.p2 == o1 + v1);
+    assert(is_equal(vid.p1, o1, precision));
+    assert(is_equal(vid.p2, o1 + v1, precision));
     // o1 on ep2, ep1 before o2
     v1 = Vector_2D(-8,-8);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o2 + v2);
-    assert(vid.p2 == o2);
+    assert(is_equal(vid.p1, o2 + v2, precision));
+    assert(is_equal(vid.p2, o2, precision));
     // o1 after ep2, v1 before o2
     o1 = Point_2D(8,8);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o2 + v2);
-    assert(vid.p2 == o2);
+    assert(is_equal(vid.p1, o2 + v2, precision));
+    assert(is_equal(vid.p2, o2, precision));
     // o1 after ep2, ep1 == o2
     v1 = Vector_2D(-6,-6);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o2 + v2);
-    assert(vid.p2 == o2);
+    assert(is_equal(vid.p1, o2 + v2, precision));
+    assert(is_equal(vid.p2, o2, precision));
     // o1 after ep2, ep1 after o2
     v1 = Vector_2D(-4,-4);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 2);
-    assert(vid.p1 == o2 + v2);
-    assert(vid.p2 == o1 + v1);
+    assert(is_equal(vid.p1, o2 + v2, precision));
+    assert(is_equal(vid.p2, o1 + v1, precision));
     // o1 after ep2, ep1 == ep2
     v1 = Vector_2D(-1,-1);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 1);
-    assert(vid.p1 == o2 + v2);
+    assert(is_equal(vid.p1, o2 + v2, precision));
     // v1 past v2, no intersections
     o1 = Point_2D(10,10);
     assert(!intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision)); // no intersections
@@ -706,17 +688,17 @@ void Test_2D::test_intersect_vector_vector()
     o1 = Point_2D(5.5, -0.5);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 1);
-    assert(vid.p1 == o1 + v1);
+    assert(is_equal(vid.p1, o1 + v1, precision));
     // v1 middle intersects v2 middle
     o1 = Point_2D(5,0);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 1);
-    assert(vid.p1 == Point_2D(2.5,2.5));
+    assert(is_equal(vid.p1, Point_2D(2.5,2.5), precision));
     // o1 intersects v2 middle
     o1 = Point_2D(2.5,2.5);
     assert(intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
     assert(vid.num == 1);
-    assert(vid.p1 == o1);
+    assert(is_equal(vid.p1, o1, precision));
     // no intersection
     o1 = Point_2D(3,4);
     assert(!intersect_vectors(o1,o1+v1,o2,o2+v2,vid, precision));
@@ -738,9 +720,9 @@ void Test_2D::test_Facet_2D()
 {
     Facet_2D f(shared_ptr<Point_2D>(new Point_2D(1,1)), shared_ptr<Point_2D>(new Point_2D(5,5)), shared_ptr<Point_2D>(new Point_2D(5,0)));
     // test get methods
-    assert(*f.get_point1() == Point_2D(1,1));
-    assert(*f.get_point2() == Point_2D(5,0));
-    assert(*f.get_point3() == Point_2D(5,5));
+    assert(is_equal(*f.get_point1(), Point_2D(1,1), precision));
+    assert(is_equal(*f.get_point2(), Point_2D(5,0), precision));
+    assert(is_equal(*f.get_point3(), Point_2D(5,5), precision));
     // test equals
     Facet_2D f1(shared_ptr<Point_2D>(new Point_2D(5,5)), shared_ptr<Point_2D>(new Point_2D(5,0)), shared_ptr<Point_2D>(new Point_2D(1,1)));
     assert(is_equal(f, f1, precision));
@@ -785,7 +767,6 @@ void Test_2D::test_facet_contains_point()
     pt_on_side = false;
     assert(f.contains_point(Point_2D(4,2), pt_on_side, precision));
     assert(pt_on_side);
-    pt_on_side = false;
 }
 
 void Test_2D::test_Mesh_2D()
@@ -1367,6 +1348,7 @@ void Test_2D::test_intersect_meshes_18()
     assert(mesh_contains(Facet_2D(shared_ptr<Point_2D>(new Point_2D(1.28571,0)), shared_ptr<Point_2D>(new Point_2D(0,0)), shared_ptr<Point_2D>(new Point_2D(1,-1))), result1, precision));
     assert(mesh_contains(Facet_2D(shared_ptr<Point_2D>(new Point_2D(1,-1)), shared_ptr<Point_2D>(new Point_2D(0,0)), shared_ptr<Point_2D>(new Point_2D(-2,0))), result1, precision));
     assert(mesh_contains(Facet_2D(shared_ptr<Point_2D>(new Point_2D(1.8,1.8)), shared_ptr<Point_2D>(new Point_2D(3,6)), shared_ptr<Point_2D>(new Point_2D(-2,0))), result1, precision));
+    assert(mesh_contains(Facet_2D(shared_ptr<Point_2D>(new Point_2D(1.8,1.8)), shared_ptr<Point_2D>(new Point_2D(-2,0)), shared_ptr<Point_2D>(new Point_2D(0,0))), result1, precision));
     assert(result2.size() == 3);
     assert(mesh_contains(Facet_2D(shared_ptr<Point_2D>(new Point_2D(0,0)), shared_ptr<Point_2D>(new Point_2D(1.28571,0)), shared_ptr<Point_2D>(new Point_2D(1.8,1.8))), result2, precision));
     assert(mesh_contains(Facet_2D(shared_ptr<Point_2D>(new Point_2D(1.28571,0)), shared_ptr<Point_2D>(new Point_2D(10,0)), shared_ptr<Point_2D>(new Point_2D(1.8,1.8))), result2, precision));
@@ -2873,7 +2855,6 @@ void Test_2D::test_valid_mesh_3()
     assert(is_equal(*iter++, Facet_2D(shared_ptr<Point_2D>(new Point_2D(0,0)), shared_ptr<Point_2D>(new Point_2D(10,0)), shared_ptr<Point_2D>(new Point_2D(5,5))), precision));
     assert(is_equal(*iter++, Facet_2D(shared_ptr<Point_2D>(new Point_2D(0,0)), shared_ptr<Point_2D>(new Point_2D(5.00001,4.99999)), shared_ptr<Point_2D>(new Point_2D(5,5))), precision));
     assert(is_equal(*iter, Facet_2D(shared_ptr<Point_2D>(new Point_2D(10,0)), shared_ptr<Point_2D>(new Point_2D(5,5)), shared_ptr<Point_2D>(new Point_2D(0,0))), precision));
-    assert(!valid.facets_inside_facet_empty());
 //    cout << "\nfacets_inside_facets size: " << valid.facets_inside_facet_size() << "\n";
 //    for (Valid_Mesh_2D::facets_inside_facet_iterator iter = valid.facets_inside_facet_begin(); iter != valid.facets_inside_facet_end(); ++iter)
 //    {

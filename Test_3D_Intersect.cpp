@@ -2500,6 +2500,7 @@ void Test_3D::test_mesh_intersection_3()
     Intersect_Meshes_3D intersect_meshes;
     intersect_meshes.intersection(shape, shape2, result);
     assert(result.size() == 12);
+    assert(false);
 }
 
 void Test_3D::test_mesh_intersection_4()
